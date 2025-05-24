@@ -171,6 +171,24 @@ class Database {
                 cout << "Группы с таким названием не существует в базе.\n";
             }
         }
+
+        // Загрузка из файла
+        void loadFromFile(const string &filename){
+            ifstream File(filename);
+            if(!File){
+                cerr << "Ошибка открытия файла!" << endl;
+                return;
+            }
+
+            // Очищаем все предыдущие записи
+            groups.clear();
+
+            while(File.peek() != EOF) {
+                groups.push_back(StudentGroup::loadFromFile(File));
+            }
+            File.close();
+            cout << "База данных успешно загружена. Записей: " << groups.size() << endl;
+        }
 };
 
 // print menu to the console
