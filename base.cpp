@@ -176,7 +176,7 @@ class Database {
         void loadFromFile(const string &filename){
             ifstream File(filename);
             if(!File){
-                cerr << "Ошибка открытия файла!" << endl;
+                cerr << "Ошибка открытия файла для чтения!" << endl;
                 return;
             }
 
@@ -188,6 +188,21 @@ class Database {
             }
             File.close();
             cout << "База данных успешно загружена. Записей: " << groups.size() << endl;
+        }
+
+        void saveToFile(const string &File) const{
+            ofstream File(File);
+            if(!File){
+                cerr << "Ошибка открытия файла для записи!" << endl;
+                return;
+            }
+
+            for(const auto &group : groups){
+                group.saveToFile(File);
+            }
+
+            File.close();
+            cout << "База данных сохранена. Записей: " << groups.size() << endl;
         }
 };
 
