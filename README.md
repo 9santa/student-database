@@ -1,1 +1,1 @@
-# student-databse
+# student-database
