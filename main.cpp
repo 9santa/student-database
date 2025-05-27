@@ -6,20 +6,8 @@
 #include <format>
 #include <limits>
 
-
 using namespace std;
 
-using ll = long long;
-
-#define F first
-#define S second
-#define pb push_back
-#define all(x) x.begin(), x.end()
-#define debug(x) cout << __FUNCTION__ << ":" << __LINE__ << " " << #x << " = " << x << endl
-
-const int MOD = 998244353;
-const double PI = 3.141592653589793;
-bool flag = 0;
 
 class StudentGroup {
     private:
@@ -119,7 +107,7 @@ class Database {
 
             cout << "Год набора: "; cin >> year;
 
-            cout << "Степень обучения (char = B/C/M): "; cin >> degree;
+            cout << "Степень обучения (eng char = B/C/M): "; cin >> degree;
 
             cout << "Факультет: ";
             cin.ignore(); // пропускаем символ новой строки в буфере
@@ -191,10 +179,14 @@ class Database {
         // Загрузка из файла
         void loadFromFile(const string &filename){
             ifstream File(filename);
+
             if(!File){
                 cerr << "Ошибка открытия файла для чтения!" << endl;
                 return;
             }
+
+            string header;
+            getline(File, header);
 
             // Очищаем все предыдущие записи
             groups.clear();
@@ -254,7 +246,7 @@ class Database {
                cout << "Группа факультета " << faculty << " не найдены." << endl;
                return;
             }
-            cout << "Групаы факультета " << faculty << " (по численности):";
+            cout << "Групаы факультета " << faculty << " (по численности):\n";
             for(const auto &g : filtered){
                 g.print();
             }
@@ -289,8 +281,9 @@ void printMenu() {
     cout << "5. Сохранить БД в файл\n";
     cout << "6. Сортировать БД по названию\n";
     cout << "7. Поиск группы по названию\n";
-    cout << "8. Вывести группы факультета по численности\n";
-    cout << "9. Создать отдельные БД по типам обучения\n";
+    cout << "8. Отфильтровать БД по году (диапазон)\n";
+    cout << "9. Вывести группы факультета по численности\n";
+    cout << "10. Создать отдельные БД по типам обучения\n";
     cout << "0. Выход\n";
 }
 
@@ -305,11 +298,6 @@ int main()
         return 1;
     }
     */
-    
-    //ios::sync_with_stdio(0);
-    //cin.tie(0);
-    //cout.tie(0);
-
     clock_t z = clock();
 
     Database db;

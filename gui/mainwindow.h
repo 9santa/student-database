@@ -66,6 +66,7 @@ private slots:
     void filterButtonClicked();
     void facultyButtonClicked();
     void splitButtonClicked();
+    void showSeperatedGroups(const QVector<StudentGroup> &groups, const QString &title);
 
     void updateTable();
 

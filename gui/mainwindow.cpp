@@ -343,6 +343,35 @@ void MainWindow::facultyButtonClicked()
     dialog->exec();
 }
 
+void MainWindow::showSeperatedGroups(const QVector<StudentGroup> &groups, const QString &title){
+    QDialog *dialog = new QDialog(this);
+    QTableWidget *table = new QTableWidget(dialog);
+    table->setColumnCount(6);
+    table->setRowCount(groups.size());
+
+    QStringList headers = {"Name", "Year", "Degree", "Faculty", "Captain", "Students"};
+    table->setHorizontalHeaderLabels(headers);
+    table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    for(int i = 0; i < groups.size(); i++){
+        const StudentGroup &group = groups[i];
+        table->setItem(i, 0, new QTableWidgetItem(group.name()));
+        table->setItem(i, 1, new QTableWidgetItem(QString::number(group.year())));
+        table->setItem(i, 2, new QTableWidgetItem(group.degree()));
+        table->setItem(i, 3, new QTableWidgetItem(group.faculty()));
+        table->setItem(i, 4, new QTableWidgetItem(group.captain()));
+        table->setItem(i, 5, new QTableWidgetItem(QString::number(group.studentCount())));
+    }
+
+    QVBoxLayout *layout = new QVBoxLayout(dialog);
+    layout->addWidget(table);
+    dialog->setLayout(layout);
+    dialog->setWindowTitle(title);
+    dialog->resize(800, 400);
+    dialog->exec();
+
+}
+
 void MainWindow::splitButtonClicked()
 {
     m_bachelorGroups.clear();
@@ -370,4 +399,8 @@ void MainWindow::splitButtonClicked()
                                  .arg(m_bachelorGroups.size())
                                  .arg(m_specialistGroups.size())
                                  .arg(m_masterGroups.size()));
+
+    showSeperatedGroups(m_bachelorGroups, "Bachelor Groups");
+    showSeperatedGroups(m_specialistGroups, "Specialist Groups");
+    showSeperatedGroups(m_masterGroups, "Master Groups");
 }
