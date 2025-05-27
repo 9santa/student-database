@@ -300,11 +300,15 @@ int main()
     
     clock_t z = clock();
 
+    // Создание основной БД (db)
     Database db;
+    // Создание БД по степени обучения
     Database bachelorDB, specialistDB, masterDB;
+
     string filename;
     int choice;
 
+    // Главный цикл программы, отвечающий за меню и выбор пользователя
     do{
         printMenu();
         cin >> choice;
