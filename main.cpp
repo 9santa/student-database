@@ -9,6 +9,7 @@
 using namespace std;
 
 
+// Класс записи одной группы (ячейки) в БД
 class StudentGroup {
     private:
         string name;        // Наименование *
@@ -52,11 +53,13 @@ class StudentGroup {
                  << " | " << setw(8) << studentCount << '\n';
         }
 
+        // Сохранение одной записи в файл
         void saveToFile(ofstream &output) const {
             output << name << ';' << year << ';' << degree << ';' << faculty << ';'
                 << captain << ';' << studentCount << '\n';
         }
 
+        // Статический метод для парсинга и загрузки БД из файла
         static StudentGroup loadFromFile(ifstream &input){
             string line;
             getline(input, line);
@@ -84,6 +87,7 @@ class StudentGroup {
         }
 };
 
+// Основной класс для управления БД
 class Database {
     private:
         vector<StudentGroup> groups;
@@ -133,6 +137,7 @@ class Database {
             cout << "Группа успешно удалена.\n";
         }
 
+        // Вывод БД в консоль
         void view() const {
             if(groups.empty()){
                 cout << "База данных абсолютно пуста.\n";
@@ -153,7 +158,7 @@ class Database {
         }
 
 
-
+        // Поиск записи по имени (идентификатору)
         void searchByName(const string &name){
             bool found = false;
             for(const auto &group : groups){
@@ -176,7 +181,7 @@ class Database {
             cout << "Сортировка по названию успешна." << endl;
         }
 
-        // Загрузка из файла
+        // Загрузка БД из файла
         void loadFromFile(const string &filename){
             ifstream File(filename);
 
@@ -198,6 +203,7 @@ class Database {
             cout << "База данных успешно загружена. Записей: " << groups.size() << endl;
         }
 
+        // Сохранить БД в файл
         void saveToFile(const string &filename) const{
             ofstream File(filename);
             if(!File){
@@ -234,6 +240,7 @@ class Database {
                 });
         }
 
+        // Кол-во групп по факультету
         void printFacultyByCount(const string &faculty){
             vector<StudentGroup> filtered;
             for(const auto &g : groups){
@@ -246,12 +253,13 @@ class Database {
                cout << "Группа факультета " << faculty << " не найдены." << endl;
                return;
             }
-            cout << "Групаы факультета " << faculty << " (по численности):\n";
+            cout << "Группы факультета " << faculty << " (по численности):\n";
             for(const auto &g : filtered){
                 g.print();
             }
         }
 
+        // Разделяем на три БД по степени обучения
         void createSeperateDBs(Database &bachelorDB, Database &specialistDB, Database &masterDB){
             for(const auto &g : groups){
                 switch(g.getDegree()){
@@ -290,14 +298,6 @@ void printMenu() {
 int main()
 {
     
-    /*
-    ifstream inFile("groups.csv");
-    ofstream output("output.txt");
-    if(!input.is_open() || !output.is_open()){
-        cerr << "Ошибка открытия файла\n";
-        return 1;
-    }
-    */
     clock_t z = clock();
 
     Database db;
@@ -382,12 +382,6 @@ int main()
     } while(choice != 0);
 
     
-    //printMenu();
-    //cohle(input, output);
-
-    //input.close();
-    //output.close();
-
     cerr << "\nRun Time : " << ((double)(clock() - z) / CLOCKS_PER_SEC) << '\n';
     
 
