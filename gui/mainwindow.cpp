@@ -175,7 +175,9 @@ void MainWindow::addButtonClicked()
 {
     QString name = ui->nameEdit->text();
     int year = ui->yearSpin->value();
-    QChar degree = ui->degreeCombo->currentText()[0];
+    QString degree_text = ui->degreeCombo->currentText();
+    QChar degree = degree_text[degree_text.indexOf('(') + 1];
+
     QString faculty = ui->facultyEdit->text();
     QString captain = ui->captainEdit->text();
     int count = ui->countSpin->value();
