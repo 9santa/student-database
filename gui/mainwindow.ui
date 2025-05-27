@@ -17,6 +17,9 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
         <string>Database</string>
@@ -121,7 +124,7 @@
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Year Range:</string>
+             <string>                  Year Range:</string>
             </property>
            </widget>
           </item>
@@ -141,7 +144,7 @@
           <item>
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>to</string>
+             <string>                         to</string>
             </property>
            </widget>
           </item>

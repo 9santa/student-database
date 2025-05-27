@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMetaObject>
+#include <QIcon>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,6 +25,20 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->filterButton, &QPushButton::clicked, this, &MainWindow::filterButtonClicked);
     connect(ui->facultyButton, &QPushButton::clicked, this, &MainWindow::facultyButtonClicked);
     connect(ui->splitButton, &QPushButton::clicked, this, &MainWindow::splitButtonClicked);
+
+    // Set icons to buttons
+    ui->loadButton->setIcon(QIcon::fromTheme("document-open"));
+    ui->loadButton->setIconSize(QSize(32,32));
+    ui->saveButton->setIcon(QIcon::fromTheme("document-save"));
+    ui->saveButton->setIconSize(QSize(32,32));
+    ui->searchButton->setIcon(style()->standardIcon(QStyle::SP_FileDialogListView));
+    ui->searchButton->setIconSize(QSize(16, 16));
+    ui->deleteButton->setIcon(style()->standardIcon(QStyle::SP_TrashIcon));
+    ui->deleteButton->setIconSize(QSize(16, 16));
+    ui->sortButton->setIcon((style()->standardIcon(QStyle::SP_ArrowDown)));
+    ui->sortButton->setIconSize(QSize(32,32));
+
+
 }
 
 MainWindow::~MainWindow()
