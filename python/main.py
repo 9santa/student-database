@@ -45,7 +45,7 @@ class Database:
     def __init__(self):
         self.groups = []
 
-    def addGroup():
+    def addGroup(self):
         print("Введите данные группы для добавления:\n")
         name = input("Название группы: ")
         year = int(input("Год набора: "))
@@ -57,6 +57,76 @@ class Database:
         group = StudentGroup(name, year, degree, faculty, captain, count)
         self.groups.append(group)
         print("\nГруппа успешно добавлена!\n")
+
+    def deleteGroup(self, index):
+        if index < 0 or index >= len(self.groups):
+            raise ValueError("Введен неверный индекс!\n")
+            return
+
+        del self.groups[index]
+        print("Группа успешно удалена.\n")
+
+    def view(self):
+        if not self.groups:
+            print("База данных абсолютно пуста.\n")
+            return
+
+        header = "| {:<14} | {:<10} | {:<50} | {:<40} | {:<8} |".format(
+        "Название", "Год", "Факультет", "Староста", "Кол-во")
+
+        print("\n" + header)
+        print("-" + len(header))
+
+        for group in self.groups:
+            group.print()
+
+
+    def searchByName(self, name):
+        found = False
+        for group in self.groups:
+            if group.name == name:
+                found = True
+                print("Группа найдена!\n")
+                group.print()
+                break
+        if not found:
+            print("Группы с таким названием не существует в базе.\n")
+
+    
+    def loadFromFile(self, filename):
+        try:
+            with open(filename, 'r', encoding='utf-8') as File:
+                header = File.readline()
+                self.groups.clear()
+
+                for line in File:
+                    line = line.strip()
+                    if not line:
+                        continue # Пропуск пустых строк
+
+                    group = StudentGroup.loadFromFile(line)
+                    self.groups.append(group)
+
+                print(f"База данных успешно загружена. Записей: {len(self.groups)}")
+        except IOError:
+            print("Ошибка открытия файла для чтения!\n")
+
+    def saveToFile(self, filename):
+        try:
+            with open(filename, 'w') as File:
+                for group in self.groups:
+                    group.saveToFile(File)
+
+                print(f"База данных успешно сохранена. Записей: {len(self.groups)}")
+        except IOError:
+            print("Ошибка при открытия файла для записи!\n")
+
+
+
+
+
+
+
 
 
 
