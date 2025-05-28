@@ -33,7 +33,7 @@ class StudentGroup {
         string getCaptain() const { return captain; }
         int getStudentCount() const { return studentCount; }
 
-        // GETTERS
+        // SETTERS
         void setName(string n) { name = n; }
         void setYear(int y) { year = y; }
         void setDegree(char deg) { degree = deg; }
@@ -55,11 +55,11 @@ class StudentGroup {
 
         // Сохранение одной записи в файл
         void saveToFile(ofstream &output) const {
-            output << name << ';' << year << ';' << degree << ';' << faculty << ';'
-                << captain << ';' << studentCount << '\n';
+            output << name << ',' << year << ',' << degree << ',' << faculty << ','
+                << captain << ',' << studentCount << '\n';
         }
 
-        // Статический метод для парсинга и загрузки БД из файла
+        // Статический метод для парсинга и загрузки строки из файла в БД
         static StudentGroup loadFromFile(ifstream &input){
             string line;
             getline(input, line);
@@ -247,12 +247,15 @@ class Database {
             for(const auto &g : groups){
                 if(g.getFaculty() == faculty) filtered.push_back(g);
             }
+
+            if(filtered.empty()){
+               cout << "Группы факультета " << faculty << " не найдены." << endl;
+               return;
+
             sort(filtered.begin(), filtered.end(), [](const StudentGroup &a, const StudentGroup &b){
                     return a.getStudentCount() < b.getStudentCount();
                     });
-            if(filtered.empty()){
-               cout << "Группа факультета " << faculty << " не найдены." << endl;
-               return;
+            
             }
             cout << "Группы факультета " << faculty << "упорядеченные по численности\n";
             for(const auto &g : filtered){
