@@ -11,24 +11,23 @@ class StudentGroup:
         self.studentCount = studentCount
 
     # Вывод информации о группе
-    def print():
+    def print(self):
         #displayFaculty = faculty[:39]
         #if len(faculty) > 25: displayFaculty += "..."
-        print(f"| {name:<14} | {year:<10} | {faculty:<40} | {captain:<50} | {studentCount:<8} |")
+        print(f"| {self.name:<10} | {self.year:<6} | {self.faculty:<30} | {self.captain:<30} | {self.studentCount:<8} |")
 
     def saveToFile(self, output_file):
         output_file.write(
-            f"{self.name},{self.year},{self.degree},{self.faculty},{self.captain},{self.student_count}\n")
+            f"{self.name},{self.year},{self.degree},{self.faculty},{self.captain},{self.studentCount}\n")
 
 
     # Статический метод для парсинга и загрузки БД из файла
     @staticmethod
-    def loadFromFile(input_file):
-        line = input_file.readline().strip()
+    def loadFromFile(line):
         if not line: raise EOFError("Файл закончен или строка пуста")
 
         cells = line.split(',')
-        if len(cells) !+ 6:
+        if len(cells) != 6:
             raise ValueError("Некорректный формат строки в файле!")
 
         return StudentGroup(
@@ -38,7 +37,7 @@ class StudentGroup:
             cells[3],           # faculty
             cells[4],           # captain
             int(cells[5]))      # studentCount
-        )
+        
 
 
 class Database:
@@ -71,11 +70,11 @@ class Database:
             print("База данных абсолютно пуста.\n")
             return
 
-        header = "| {:<14} | {:<10} | {:<50} | {:<40} | {:<8} |".format(
+        header = "| {:<10} | {:<6} | {:<30} | {:<30} | {:<8} |".format(
         "Название", "Год", "Факультет", "Староста", "Кол-во")
 
         print("\n" + header)
-        print("-" + len(header))
+        print("-" * len(header))
 
         for group in self.groups:
             group.print()
@@ -91,6 +90,11 @@ class Database:
                 break
         if not found:
             print("Группы с таким названием не существует в базе.\n")
+
+
+    def sortByName(self):
+        self.groups.sort(key=lambda g: g.name)
+        print("Сортировка по названию успешна.\n")
 
     
     def loadFromFile(self, filename):
@@ -123,7 +127,7 @@ class Database:
 
 
     def filterYear(self, start, end):
-        filtered = [g for group in self.groups
+        filtered = [group for group in self.groups
                     if start <= group.year <= end]
         if not filtered:
             print(f"Группы в диапазоне {start}-{end} не найдены.\n")
@@ -135,8 +139,8 @@ class Database:
 
 
     def printFacultyByCount(self, faculty):
-        filtered = [g for group in self.groups
-                    if group.faculty = faculty]
+        filtered = [group for group in self.groups
+                    if group.faculty == faculty]
         if not filtered:
             print(f"Группы факультета {faculty} не найдены.\n")
             return
@@ -152,9 +156,9 @@ class Database:
         for g in self.groups:
             if g.degree == 'B':
                 bachelorDB.groups.append(g)
-            elif g.degree = 'C':
+            elif g.degree == 'C':
                 specialistDB.groups.append(g)
-            elif g.degree = 'M':
+            elif g.degree == 'M':
                 masterDB.groups.append(g)
 
             self.groups.clear()
@@ -162,17 +166,81 @@ class Database:
 
 
 def printMenu():
-    print("\n1. Загрузить БД из файла\n")
-    print("2. Просмотр БД\n")
-    print("3. Добавить группу\n")
-    print("4. Удалить группу\n")
-    print("5. Сохранит БД в файл\n")
-    print("6. Сортировать БД по названию\n")
-    print("7. Поиск группы по названию\n")
-    print("8. Отфильтровать БД по году (диапазон)\n")
-    print("9. Вывести группы факультета, отсортированные по численности\n")
-    print("10. Разделить БД по типам обучения\n")
+    print("\n1. Загрузить БД из файла")
+    print("2. Просмотр БД")
+    print("3. Добавить группу")
+    print("4. Удалить группу")
+    print("5. Сохранит БД в файл")
+    print("6. Сортировать БД по названию")
+    print("7. Поиск группы по названию")
+    print("8. Отфильтровать БД по году (диапазон)")
+    print("9. Вывести группы факультета, отсортированные по численности")
+    print("10. Разделить БД по типам обучения")
     print("0. Выход\n")
+
+
+def main():
+    db = Database()
+    bachelorDB = Database()
+    specialistDB = Database()
+    masterDB = Database()
+
+    flag = True
+    while flag:
+        printMenu()
+        choice = int(input())
+
+        if choice == 1:
+            file = input("Введите имя файла: ")
+            db.loadFromFile(file)
+
+        elif choice == 2:
+            db.view()
+
+        elif choice == 3:
+            db.addGroup()
+
+        elif choice == 4:
+            index = int(input("Введите порядковый номер группы для удаления: "))
+            db.deleteGroup(index)
+
+        elif choice == 5:
+            file = input("Введите имя файла: ")
+            db.saveToFile(file)
+
+        elif choice == 6:
+            db.sortByName()
+
+        elif choice == 7:
+            name = input("Введите название группы для поиска: ")
+            db.searchByName(name)
+
+        elif choice == 8:
+            start = int(input("Введите начальный год: "))
+            end = int(input("Введите конечный год: "))
+            db.filterYear(start, end)
+
+        elif choice == 9:
+            faculty = input("Введите названиe факультета: ")
+            db.printFacultyByCount(faculty)
+
+        elif choice == 10:
+            db.createSeperateDBs(bachelorDB, specialistDB, masterDB)
+            print(f"Бакалавриат ({len(bachelorDB.groups)} групп)\n")
+            print(f"Специалитет ({len(specialistDB.groups)} групп)\n")
+            print(f"Магистратура ({len(masterDB.groups)} групп)\n")
+
+        elif choice == 0:
+            print("Выход из программы.\n")
+            flag = False
+
+        else:
+            print("Неверный выбор. Попробуйте снова.\n")
+
+
+if __name__ == "__main__":
+    main()
+
 
 
 
