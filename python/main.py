@@ -122,6 +122,60 @@ class Database:
             print("Ошибка при открытия файла для записи!\n")
 
 
+    def filterYear(self, start, end):
+        filtered = [g for group in self.groups
+                    if start <= group.year <= end]
+        if not filtered:
+            print(f"Группы в диапазоне {start}-{end} не найдены.\n")
+            return
+        
+        print(f"Группы в диапазоне {start}-{end}:\n")
+        for group in filtered:
+            group.print()
+
+
+    def printFacultyByCount(self, faculty):
+        filtered = [g for group in self.groups
+                    if group.faculty = faculty]
+        if not filtered:
+            print(f"Группы факультета {faculty} не найдены.\n")
+            return
+
+        filtered.sort(key=lambda g: g.studentCount)
+
+        print(f"Группы факультета {faculty} упорядоченные по численности\n")
+        for group in filtered:
+            group.print()
+
+
+    def createSeperateDBs(self, bachelorDB, specialistDB, masterDB):
+        for g in self.groups:
+            if g.degree == 'B':
+                bachelorDB.groups.append(g)
+            elif g.degree = 'C':
+                specialistDB.groups.append(g)
+            elif g.degree = 'M':
+                masterDB.groups.append(g)
+
+            self.groups.clear()
+            print("База данных разделена по типам обучения.\n")
+
+
+def printMenu():
+    print("\n1. Загрузить БД из файла\n")
+    print("2. Просмотр БД\n")
+    print("3. Добавить группу\n")
+    print("4. Удалить группу\n")
+    print("5. Сохранит БД в файл\n")
+    print("6. Сортировать БД по названию\n")
+    print("7. Поиск группы по названию\n")
+    print("8. Отфильтровать БД по году (диапазон)\n")
+    print("9. Вывести группы факультета, отсортированные по численности\n")
+    print("10. Разделить БД по типам обучения\n")
+    print("0. Выход\n")
+
+
+
 
 
 
