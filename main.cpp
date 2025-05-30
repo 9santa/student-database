@@ -6,7 +6,40 @@
 #include <format>
 #include <limits>
 
+// Для Windows устанавливаем UTF-8 и корректируем консоль
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 using namespace std;
+
+
+
+// Подсчёт количества символов в UTF-8 строке
+size_t utf8_len(const std::string& str) {
+    size_t len = 0;
+    for (size_t i = 0; i < str.size(); ) {
+        unsigned char c = static_cast<unsigned char>(str[i]);
+        if ((c & 0x80) == 0) i += 1;           // 1 байт (ASCII)
+        else if ((c & 0xE0) == 0xC0) i += 2;   // 2 байта
+        else if ((c & 0xF0) == 0xE0) i += 3;   // 3 байта
+        else if ((c & 0xF8) == 0xF0) i += 4;   // 4 байта
+        else i += 1;
+        len++;
+    }
+    return len;
+}
+
+// Печать строки с учётом UTF-8 ширины и нужного выравнивания
+void print_utf8_column(const std::string& str, size_t width) {
+    size_t len = utf8_strlen(str);
+    std::cout << str;
+    if (len < width) {
+        for (size_t i = 0; i < width - len; ++i)
+            std::cout << ' ';
+    }
+}
+
 
 
 // Класс записи одной группы (ячейки) в БД
@@ -41,16 +74,19 @@ class StudentGroup {
         void setCaptain(string cap) { captain = cap; }
         void setStudentCount(int count) { studentCount = count; }
 
-        // вывод информации о группе (записи)
+        // Вывод информации о группе (записи)
         void print() const {
-            string displayFaculty = faculty.substr(0,39);
-            if(faculty.length() > 25) displayFaculty += "...";
-            cout << left
-                 << "| " << setw(14) << name
-                 << " | " << setw(10) << year
-                 << " | " << setw(40) << faculty
-                 << " | " << setw(50) << captain
-                 << " | " << setw(8) << studentCount << '\n';
+            std::cout << "| ";
+            print_utf8_column(name, 14);
+            std::cout << " | ";
+            print_utf8_column(std::to_string(year), 10);
+            std::cout << " | ";
+            print_utf8_column(faculty, 40);
+            std::cout << " | ";
+            print_utf8_column(captain, 50);
+            std::cout << " | ";
+            print_utf8_column(std::to_string(studentCount), 8);
+            std::cout << '\n';
         }
 
         // Сохранение одной записи в файл
@@ -145,12 +181,12 @@ class Database {
             }
 
             cout << left
-                 << setw(14) << "\nНазвание"
-                 << " | " << setw(10) << "Год"
+                 << setw(24) << "\nНазвание"
+                 << " | " << setw(14) << "Год"
                  << " | " << setw(50) << "Факультет"
-                 << " | " << setw(40) << "Староста"
+                 << " | " << setw(56) << "Староста"
                  << " | " << setw(8) << "Кол-во\n";
-            cout << string(112, '-') << '\n'; // разделитель
+            cout << string(150, '-') << '\n'; // разделитель
 
             for(const auto &group : groups){
                 group.print();
@@ -283,6 +319,7 @@ class Database {
             cout << "База данных разделена по типам обучения." << endl;
         }
 };
+
 
 // print menu to the console
 void printMenu() {
